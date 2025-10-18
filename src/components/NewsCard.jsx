@@ -1,8 +1,10 @@
 import { FaRegBookmark, FaRegEye, FaShareAlt } from 'react-icons/fa';
 import { IoStar, IoStarOutline } from 'react-icons/io5';
+import { Link } from 'react-router';
 
 const NewsCard = ({ news }) => {
   const {
+    id,
     title,
     author,
     published_date,
@@ -59,9 +61,12 @@ const NewsCard = ({ news }) => {
         {details.length > 200 ? (
           <>
             {details.slice(0, 200)}...{' '}
-            <span className="text-blue-600 font-medium cursor-pointer">
+            <Link
+              to={`/newsDetails/${id}`}
+              className="text-blue-600 font-medium cursor-pointer hover:text-blue-800 hover:underline"
+            >
               Read More
-            </span>
+            </Link>
           </>
         ) : (
           details
