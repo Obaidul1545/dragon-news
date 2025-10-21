@@ -1,21 +1,37 @@
-import { use } from 'react';
+import { use, useState } from 'react';
 import { Link } from 'react-router';
 import { AuthContext } from '../Provider/AuthProvider';
+import { LuReceiptRussianRuble } from 'react-icons/lu';
 
 const Register = () => {
-  const { setUser, createUser } = use(AuthContext);
+  const [nameError, setNameError] = useState('');
+
+  const { setUser, createUser, updateUser } = use(AuthContext);
 
   const handleRegister = (e) => {
     e.preventDefault();
     const form = e.target;
     const name = form.name.value;
-    const photoURL = form.photoURL.value;
+    if (nameError < 5) {
+      setNameError('Name should be more then 5 charecter');
+      return;
+    } else {
+      setNameError('');
+    }
+    const photo = form.photoURL.value;
     const email = form.email.value;
     const password = form.password.value;
 
     createUser(email, password)
       .then((result) => {
-        setUser(result.user);
+        const user = result.user;
+        updateUser({ displayName: name, photoURL: photo })
+          .then(() => {
+            setUser({ ...user, displayName: name, photoURL: photo });
+          })
+          .catch((error) => {
+            console.log(error.message);
+          });
       })
       .catch((error) => {
         console.log(error.message);
@@ -38,6 +54,7 @@ const Register = () => {
                 placeholder="Name"
                 required
               />
+              {<p className="text-red-400">{nameError}</p>}
 
               {/* Photo URL  */}
               <label className="label">Photo URL</label>
